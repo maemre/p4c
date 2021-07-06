@@ -1,5 +1,5 @@
-#ifndef EXTENSIONS_BF_P4C_CONTROL_PLANE_TABLE_DRIVEN_SCHEMA_GEN_H_
-#define EXTENSIONS_BF_P4C_CONTROL_PLANE_TABLE_DRIVEN_SCHEMA_GEN_H_
+#ifndef EXTENSIONS_BF_P4C_CONTROL_PLANE_BFRUNTIME_H_
+#define EXTENSIONS_BF_P4C_CONTROL_PLANE_BFRUNTIME_H_
 
 #include <iosfwd>
 #include <algorithm>
@@ -19,7 +19,7 @@
 #include "lib/json.h"
 #include "lib/log.h"
 #include "lib/null.h"
-#include "control-plane/p4/config/v1/p4info.pb.h"
+#include "p4/config/v1/p4info.pb.h"
 
 namespace p4configv1 = ::p4::config::v1;
 
@@ -29,7 +29,7 @@ struct P4RuntimeAPI;
 
 namespace P4 {
 
-namespace TDSG {
+namespace BFRT {
 
 using P4Id = uint32_t;
 
@@ -280,20 +280,9 @@ class TypeSpecParser {
     Fields fields;
 };
 
-/// This class is in charge of translating the P4Info Protobuf message used in
-/// the context of P4Runtime to the BF-RT info JSON used by the BF-RT API. It
-/// supports both the "standard" P4Info message (the one used for v1model & PSA)
-/// and P4Info with Tofino-specific extensions (the one used for TNA and JNA
-/// programs).
-/// TODO(antonin): In theory the BF-RT info JSON generated for a PSA program
-/// (standard P4Info) and the one generated for the translated version of the
-/// program (P4Info with Tofino extensions) should be exactly the same since
-/// there is no loss of information and the names should remain the
-/// same. Whether this is true in practice remains to be seen. We can change our
-/// approach fairly easily if needed.
-class TableDrivenSchemaGenerator {
+class BFRuntimeGenerator {
  public:
-    explicit TableDrivenSchemaGenerator(const p4configv1::P4Info& p4info)
+    explicit BFRuntimeGenerator(const p4configv1::P4Info& p4info)
         : p4info(p4info) { }
 
     /// Generates the schema as a Json object for the provided P4Info instance.
@@ -343,7 +332,7 @@ class TableDrivenSchemaGenerator {
         TD_DATA_END,
     };
 
-    /// Common counter representation between PSA and Tofino architectures
+    /// Common counter representation between PSA and other architectures
     struct Counter {
         enum Unit { UNSPECIFIED = 0, BYTES = 1, PACKETS = 2, BOTH = 3 };
         std::string name;
@@ -358,7 +347,7 @@ class TableDrivenSchemaGenerator {
         fromDirect(const p4configv1::DirectCounter& counterInstance);
     };
 
-    /// Common meter representation between PSA and Tofino architectures
+    /// Common meter representation between PSA and other architectures
     struct Meter {
         enum Unit { UNSPECIFIED = 0, BYTES = 1, PACKETS = 2 };
         enum Type { COLOR_UNAWARE = 0, COLOR_AWARE = 1 };
@@ -373,7 +362,7 @@ class TableDrivenSchemaGenerator {
         static boost::optional<Meter> fromDirect(const p4configv1::DirectMeter& meterInstance);
     };
 
-    /// Common action profile / selector representation between PSA and Tofino
+    /// Common action profile / selector representation between PSA and other
     /// architectures
     struct ActionProf {
         std::string name;
@@ -387,7 +376,7 @@ class TableDrivenSchemaGenerator {
                                     const p4configv1::ActionProfile& actionProfile);
     };
 
-    /// Common digest representation between PSA and Tofino architectures
+    /// Common digest representation between PSA and other architectures
     struct Digest {
         std::string name;
         P4Id id;
@@ -398,7 +387,7 @@ class TableDrivenSchemaGenerator {
         from(const p4configv1::Digest& digest);
     };
 
-    /// Common register representation between PSA and Tofino architectures
+    /// Common register representation between PSA and other architectures
     struct Register {
         std::string name;
         std::string dataFieldName;
@@ -481,7 +470,7 @@ class TableDrivenSchemaGenerator {
 
     static void addToDependsOn(Util::JsonObject* tableJson, P4Id id);
 
-    /// Add register data fields to the JSON data array for a TDSG table. Field
+    /// Add register data fields to the JSON data array for a BFRT table. Field
     /// ids are assigned incrementally starting at @idOffset, which is 1 by
     /// default.
     void addRegisterDataFields(Util::JsonArray* dataJson,
@@ -492,8 +481,8 @@ class TableDrivenSchemaGenerator {
     const p4configv1::P4Info& p4info;
 };
 
-}  // namespace TDSG
+}  // namespace BFRT
 
 }  // namespace P4
 
-#endif /* EXTENSIONS_BF_P4C_CONTROL_PLANE_TABLE_DRIVEN_SCHEMA_GEN_H_ */
+#endif /* EXTENSIONS_BF_P4C_CONTROL_PLANE_BFRUNTIME_H_ */
