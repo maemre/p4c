@@ -35,7 +35,7 @@ using P4Id = uint32_t;
 
 // Helpers
 template <typename T, typename R>
-static constexpr P4Id makeBfRtId(T base, R prefix) {
+static constexpr P4Id makeBFRuntimeId(T base, R prefix) {
     return static_cast<P4Id>((base & 0xffffff) | (prefix << 24));
 }
 
@@ -290,7 +290,7 @@ class BFRuntimeGenerator {
 
     /// Generates BF-RT JSON schema from P4Info protobuf message and writes it to
     /// the @destination stream.
-    void serializeBfRtSchema(std::ostream* destination);
+    void serializeBFRuntimeSchema(std::ostream* destination);
 
  protected:
     // To avoid potential clashes with P4 names, we prefix the names of "fixed"

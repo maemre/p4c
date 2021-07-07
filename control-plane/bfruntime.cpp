@@ -123,7 +123,7 @@ TypeSpecParser TypeSpecParser::make(const p4configv1::P4Info& p4info,
 boost::optional<BFRuntimeGenerator::Counter>
 BFRuntimeGenerator::Counter::from(const p4configv1::Counter& counterInstance) {
     const auto& pre = counterInstance.preamble();
-    auto id = makeBfRtId(pre.id(), p4configv1::P4Ids::COUNTER);
+    auto id = makeBFRuntimeId(pre.id(), p4configv1::P4Ids::COUNTER);
     // TODO(antonin): this works because the enum values are the same for
     // Counter::Unit and for CounterSpec::Unit, but this may not be very
     // future-proof.
@@ -134,7 +134,7 @@ BFRuntimeGenerator::Counter::from(const p4configv1::Counter& counterInstance) {
 boost::optional<BFRuntimeGenerator::Counter>
 BFRuntimeGenerator::Counter::fromDirect(const p4configv1::DirectCounter& counterInstance) {
     const auto& pre = counterInstance.preamble();
-    auto id = makeBfRtId(pre.id(), p4configv1::P4Ids::DIRECT_COUNTER);
+    auto id = makeBFRuntimeId(pre.id(), p4configv1::P4Ids::DIRECT_COUNTER);
     auto unit = static_cast<Unit>(counterInstance.spec().unit());
     return Counter{pre.name(), id, 0, unit, transformAnnotations(pre)};
 }
@@ -143,7 +143,7 @@ BFRuntimeGenerator::Counter::fromDirect(const p4configv1::DirectCounter& counter
 boost::optional<BFRuntimeGenerator::Meter>
 BFRuntimeGenerator::Meter::from(const p4configv1::Meter& meterInstance) {
     const auto& pre = meterInstance.preamble();
-    auto id = makeBfRtId(pre.id(), p4configv1::P4Ids::METER);
+    auto id = makeBFRuntimeId(pre.id(), p4configv1::P4Ids::METER);
     // TODO(antonin): this works because the enum values are the same for
     // Meter::Unit and for MeterSpec::Unit, but this may not be very
     // future-proof.
@@ -162,7 +162,7 @@ BFRuntimeGenerator::Meter::from(const p4configv1::Meter& meterInstance) {
 boost::optional<BFRuntimeGenerator::Meter>
 BFRuntimeGenerator::Meter::fromDirect(const p4configv1::DirectMeter& meterInstance) {
     const auto& pre = meterInstance.preamble();
-    auto id = makeBfRtId(pre.id(), p4configv1::P4Ids::DIRECT_METER);
+    auto id = makeBFRuntimeId(pre.id(), p4configv1::P4Ids::DIRECT_METER);
     auto unit = static_cast<Unit>(meterInstance.spec().unit());
     auto type = Type::COLOR_UNAWARE;
     return Meter{pre.name(), id, 0, unit, type, transformAnnotations(pre)};
@@ -170,14 +170,14 @@ BFRuntimeGenerator::Meter::fromDirect(const p4configv1::DirectMeter& meterInstan
 
 // ActionProfile
 P4Id BFRuntimeGenerator::ActionProf::makeActProfId(P4Id implementationId) {
-  return makeBfRtId(implementationId, p4configv1::P4Ids::ACTION_PROFILE);
+  return makeBFRuntimeId(implementationId, p4configv1::P4Ids::ACTION_PROFILE);
 }
 
 boost::optional<BFRuntimeGenerator::ActionProf>
 BFRuntimeGenerator::ActionProf::from(const p4configv1::P4Info& p4info,
                                         const p4configv1::ActionProfile& actionProfile) {
     const auto& pre = actionProfile.preamble();
-    auto profileId = makeBfRtId(pre.id(), p4configv1::P4Ids::ACTION_PROFILE);
+    auto profileId = makeBFRuntimeId(pre.id(), p4configv1::P4Ids::ACTION_PROFILE);
     auto tableIds = collectTableIds(
         p4info, actionProfile.table_ids().begin(), actionProfile.table_ids().end());
     return ActionProf{pre.name(), profileId, actionProfile.size(), tableIds,
@@ -188,7 +188,7 @@ BFRuntimeGenerator::ActionProf::from(const p4configv1::P4Info& p4info,
 boost::optional<BFRuntimeGenerator::Digest>
 BFRuntimeGenerator::Digest::from(const p4configv1::Digest& digest) {
     const auto& pre = digest.preamble();
-    auto id = makeBfRtId(pre.id(), p4configv1::P4Ids::DIGEST);
+    auto id = makeBFRuntimeId(pre.id(), p4configv1::P4Ids::DIGEST);
     return Digest{pre.name(), id, digest.type_spec(), transformAnnotations(pre)};
 }
 
@@ -870,7 +870,7 @@ BFRuntimeGenerator::genSchema() const {
     return json;
 }
 
-void BFRuntimeGenerator::serializeBfRtSchema(std::ostream* destination) {
+void BFRuntimeGenerator::serializeBFRuntimeSchema(std::ostream* destination) {
     auto* json = genSchema();
     json->serialize(*destination);
     destination->flush();
