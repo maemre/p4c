@@ -41,12 +41,19 @@ export P4C_RUNTIME_DEPS="cpp \
                      libgmpxx4ldbl \
                      python3"
 
+export P4C_TC_DEPS="abseil \
+             yaml-cpp"
+
 export P4C_PIP_PACKAGES="ipaddr \
                           pyroute2 \
                           ply==3.8 \
                           scapy==2.4.4"
 
-
+# We have to use PPAs to install abseil and yaml-cpp because they are not
+# available or too old in official Ubuntu Xenial repos. We may switch to the
+# official repos when updating to 20.04 or newer in the future.
+add-apt-repository -y ppa:savoury1/build-tools
+add-apt-repository -y ppa:ymshenyu/yaml-cpp
 
 apt-get update
 apt-get install -y --no-install-recommends \
@@ -54,6 +61,7 @@ apt-get install -y --no-install-recommends \
   ${P4C_PYTHON3} \
   ${P4C_EBPF_DEPS} \
   ${P4C_RUNTIME_DEPS} \
+  ${P4C_TC_DEPS} \
   git
 
 # we want to use Python as the default so change the symlinks
