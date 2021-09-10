@@ -53,49 +53,72 @@ set (P4C_TC_HDRS
 add_cpplint_files(${CMAKE_CURRENT_SOURCE_DIR} "${P4C_TC_SRCS};${P4C_TC_HDRS}")
 
 # check for abseil libraries
+find_library(ABSEIL_BASE NAMES absl_base)
+if (ABSEIL_BASE)
+  message(STATUS "Found abseil_base library")
+else()
+  message(FATAL_ERROR "Missing abseil_base dependency, cannot build the tc backend.")
+endif()
+find_library(ABSEIL_CITY NAMES absl_city)
+if (ABSEIL_CITY)
+  message(STATUS "Found abseil_city library")
+else()
+  message(FATAL_ERROR "Missing abseil_city dependency, cannot build the tc backend.")
+endif()
 find_library(ABSEIL_FLAGS NAMES absl_flags)
-if (ABSEIL)
+if (ABSEIL_FLAGS)
   message(STATUS "Found abseil_flags library")
 else()
   message(FATAL_ERROR "Missing abseil_flags dependency, cannot build the tc backend.")
 endif()
 find_library(ABSEIL_STATUS NAMES absl_status)
-if (ABSEIL)
+if (ABSEIL_STATUS)
   message(STATUS "Found abseil_status library")
 else()
   message(FATAL_ERROR "Missing abseil_status dependency, cannot build the tc backend.")
 endif()
 find_library(ABSEIL_STATUSOR NAMES absl_statusor)
-if (ABSEIL)
+if (ABSEIL_STATUSOR)
   message(STATUS "Found abseil_statusor library")
 else()
   message(FATAL_ERROR "Missing abseil_statusor dependency, cannot build the tc backend.")
 endif()
 find_library(ABSEIL_HASH NAMES absl_hash)
-if (ABSEIL)
+if (ABSEIL_HASH)
   message(STATUS "Found abseil_hash library")
 else()
   message(FATAL_ERROR "Missing abseil_hash dependency, cannot build the tc backend.")
 endif()
 find_library(ABSEIL_STRINGS NAMES absl_strings)
-if (ABSEIL)
+if (ABSEIL_STRINGS)
   message(STATUS "Found abseil_strings library")
 else()
   message(FATAL_ERROR "Missing abseil_strings dependency, cannot build the tc backend.")
 endif()
 find_library(ABSEIL_STRINGS_INTERNAL NAMES absl_strings_internal)
-if (ABSEIL)
+if (ABSEIL_STRINGS_INTERNAL)
   message(STATUS "Found abseil_strings library")
 else()
   message(FATAL_ERROR "Missing abseil_strings dependency, cannot build the tc backend.")
 endif()
+find_library(ABSEIL_THROW_DELEGATE NAMES absl_throw_delegate)
+if (ABSEIL_THROW_DELEGATE)
+  message(STATUS "Found abseil_throw_delegate library")
+else()
+  message(FATAL_ERROR "Missing abseil_throw_delegate dependency, cannot build the tc backend.")
+endif()
 
 set (ABSEIL_LIBRARIES
+  ${ABSEIL_THROW_DELEGATE}
+  ${ABSEIL_BASE}
+  ${ABSEIL_CITY}
   ${ABSEIL_FLAGS}
   ${ABSEIL_HASH}
   ${ABSEIL_STATUS}
   ${ABSEIL_STATUSOR}
-  ${ABSEIL_STRINGS_INTERNAL})
+  ${ABSEIL_STRINGS}
+  ${ABSEIL_STRINGS_INTERNAL}
+  )
 
 # check for yaml-cpp
 find_library(YAMLCPP NAMES yaml-cpp yaml-cpp-0.7.0 yamlcpp)
